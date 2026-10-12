@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digital Identity</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0d1b3e;
+      --gold: #c9a84c;
+      --gold-light: #f0d080;
+      --cream: #fdf6e3;
+      --white: #ffffff;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--navy);
+      min-height: 100vh;
+      color: var(--white);
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      background: linear-gradient(135deg, #0d1b3e 0%, #1a2f6e 50%, #0d1b3e 100%);
+      text-align: center;
+      padding: 60px 20px 50px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(201,168,76,0.12) 0%, transparent 70%);
+    }
+    .event-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: var(--gold);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      color: var(--gold);
+      text-shadow: 0 4px 30px rgba(201,168,76,0.4);
+      position: relative;
+      line-height: 1.1;
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 24px auto 0;
+      max-width: 500px;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(to right, transparent, var(--gold));
+    }
+    .divider::after {
+      background: linear-gradient(to left, transparent, var(--gold));
+    }
+    .divider-icon {
+      color: var(--gold);
+      font-size: 1.4rem;
+    }
+
+    /* ─── RULES ─── */
+    .rules-section {
+      background: var(--cream);
+      color: #1a1a1a;
+      padding: 56px 20px;
+    }
+    .rules-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.9rem;
+      color: var(--navy);
+      text-align: center;
+      margin-bottom: 36px;
+      position: relative;
+    }
+    .rules-section h2::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      background: var(--gold);
+      margin: 12px auto 0;
+      border-radius: 2px;
+    }
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .rule-card {
+      background: var(--white);
+      border-left: 4px solid var(--gold);
+      border-radius: 8px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .rule-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+    }
+    .rule-num {
+      min-width: 30px;
+      height: 30px;
+      background: var(--navy);
+      color: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+    .rule-text {
+      font-size: 0.93rem;
+      line-height: 1.6;
+      color: #333;
+    }
+    .rule-text strong {
+      color: var(--navy);
+    }
+
+    /* ─── UPLOAD ─── */
+    .upload-section {
+      background: linear-gradient(180deg, #0d1b3e 0%, #111e45 100%);
+      padding: 64px 20px 80px;
+    }
+    .upload-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.9rem;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .upload-subtitle {
+      text-align: center;
+      color: rgba(255,255,255,0.55);
+      font-size: 0.9rem;
+      margin-bottom: 40px;
+    }
+    .upload-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 16px;
+      padding: 40px 36px;
+      max-width: 560px;
+      margin: 0 auto;
+      backdrop-filter: blur(10px);
+    }
+    .form-group {
+      margin-bottom: 24px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--gold-light);
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .form-group input[type="text"] {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(201,168,76,0.35);
+      border-radius: 8px;
+      color: var(--white);
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input[type="text"]::placeholder { color: rgba(255,255,255,0.3); }
+    .form-group input[type="text"]:focus { border-color: var(--gold); }
+
+    .drop-zone {
+      border: 2px dashed rgba(201,168,76,0.45);
+      border-radius: 12px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .drop-zone.dragover {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.08);
+    }
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    .drop-icon { font-size: 2.4rem; margin-bottom: 10px; }
+    .drop-label { color: rgba(255,255,255,0.7); font-size: 0.9rem; }
+    .drop-label span { color: var(--gold); font-weight: 500; }
+    .drop-note { font-size: 0.75rem; color: rgba(255,255,255,0.35); margin-top: 6px; }
+    .file-chosen {
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: var(--gold-light);
+      word-break: break-all;
+    }
+
+    .btn-upload {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--gold) 0%, #a87c2a 100%);
+      border: none;
+      border-radius: 10px;
+      color: var(--navy);
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      margin-top: 8px;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-upload:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+    .btn-upload:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ─── PROGRESS ─── */
+    .progress-wrap {
+      display: none;
+      margin-top: 18px;
+    }
+    .progress-bar-bg {
+      background: rgba(255,255,255,0.1);
+      border-radius: 100px;
+      height: 8px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      border-radius: 100px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+    .progress-text {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    /* ─── STATUS ─── */
+    .status-box {
+      display: none;
+      margin-top: 22px;
+      padding: 16px 20px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      text-align: center;
+      line-height: 1.5;
+    }
+    .status-box.success {
+      background: rgba(34,197,94,0.12);
+      border: 1px solid rgba(34,197,94,0.4);
+      color: #86efac;
+    }
+    .status-box.error {
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.4);
+      color: #fca5a5;
+    }
+
+    /* ─── FOOTER NOTE ─── */
+    .footer-note {
+      text-align: center;
+      margin-top: 36px;
+      padding: 16px 20px;
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 10px;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+      color: rgba(255,255,255,0.65);
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+    .footer-note strong { color: var(--gold); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: #080f22;
+      text-align: center;
+      padding: 20px;
+      color: rgba(255,255,255,0.25);
+      font-size: 0.75rem;
+    }
+
+    @media (max-width: 480px) {
+      .upload-card { padding: 28px 18px; }
+      .rules-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero">
+    <p class="event-number">&#9670; Event No. 4 &#9670;</p>
+    <h1>Digital Identity</h1>
+    <div class="divider"><span class="divider-icon">✦</span></div>
+  </section>
+
+  <!-- ═══ RULES ═══ -->
+  <section class="rules-section">
+    <h2>Competition Rules</h2>
+    <div class="rules-grid">
+
+      <div class="rule-card">
+        <div class="rule-num">1</div>
+        <div class="rule-text">It is an <strong>individual competition</strong>.</div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">2</div>
+        <div class="rule-text"><strong>Only 1 participant</strong> is allowed per institution.</div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">3</div>
+        <div class="rule-text">It is a <strong>logo designing</strong> competition.</div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">4</div>
+        <div class="rule-text"><strong>Topic / Theme</strong> will be given on the spot.</div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">5</div>
+        <div class="rule-text"><strong>Time Limit:</strong> 60 minutes.</div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">6</div>
+        <div class="rule-text"><strong>Permitted Design Tools:</strong> Google Slides, Canva, Adobe Photoshop, Corel Draw, MS-Office, Paint.</div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">7</div>
+        <div class="rule-text">Internet access will be allowed <strong>only for Canva and Google Slides</strong>.</div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">8</div>
+        <div class="rule-text"><strong>Size:</strong> 800 × 800 pixels.</div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">9</div>
+        <div class="rule-text">Participants are encouraged to <strong>bring their own laptops</strong>; computers will also be available.</div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-num">10</div>
+        <div class="rule-text">If you cannot bring a laptop, only <strong>Paint, Canva, and Google Slides</strong> will be provided.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ UPLOAD ═══ -->
+  <section class="upload-section">
+    <h2>Submit Your Design</h2>
+    <p class="upload-subtitle">Upload your logo directly to our Google Drive — all file formats accepted.</p>
+
+    <div class="upload-card">
+      <div class="form-group">
+        <label for="schoolCode">&#127981; Your School Code</label>
+        <input type="text" id="schoolCode" placeholder="e.g. SCH-042" maxlength="30"/>
+      </div>
+
+      <div class="form-group">
+        <label>&#128196; Select / Drop Your File</label>
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="fileInput" accept="*/*"/>
+          <div class="drop-icon">&#9729;&#65039;</div>
+          <div class="drop-label">Drag &amp; drop here, or <span>browse</span></div>
+          <div class="drop-note">All file types accepted &bull; No size restriction</div>
+          <div class="file-chosen" id="fileChosen"></div>
+        </div>
+      </div>
+
+      <button class="btn-upload" id="uploadBtn" onclick="handleUpload()">
+        &#8679;&nbsp; Upload to Google Drive
+      </button>
+
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText">Uploading…</div>
+      </div>
+
+      <div class="status-box" id="statusBox"></div>
+    </div>
+
+    <!-- Footer note -->
+    <div class="footer-note" id="footerNote" style="display:none;">
+      &#10003;&nbsp; <strong id="uploadedFileName"></strong> has been uploaded with your assigned school code only.
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2026 Digital Identity &mdash; All Rights Reserved
+  </footer>
+
+  <script>
+    // ── Drag & Drop visual ──────────────────────────────────
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const fileChosen = document.getElementById('fileChosen');
+
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) {
+        fileInput.files = e.dataTransfer.files;
+        fileChosen.textContent = '📎 ' + e.dataTransfer.files[0].name;
+      }
+    });
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length) fileChosen.textContent = '📎 ' + fileInput.files[0].name;
+    });
+
+    // ── Upload handler ──────────────────────────────────────
+    // GOOGLE_SCRIPT_URL — replace with your deployed Apps Script Web App URL
+    const GOOGLE_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
+    async function handleUpload() {
+      const schoolCode = document.getElementById('schoolCode').value.trim();
+      const file       = fileInput.files[0];
+      const statusBox  = document.getElementById('statusBox');
+      const progressWrap = document.getElementById('progressWrap');
+      const progressFill = document.getElementById('progressFill');
+      const progressText = document.getElementById('progressText');
+      const uploadBtn    = document.getElementById('uploadBtn');
+      const footerNote   = document.getElementById('footerNote');
+      const uploadedFileName = document.getElementById('uploadedFileName');
+
+      // Validation
+      statusBox.style.display = 'none';
+      statusBox.className = 'status-box';
+      if (!schoolCode) { showStatus('error', '⚠️ Please enter your School Code before uploading.'); return; }
+      if (!file)       { showStatus('error', '⚠️ Please select a file to upload.'); return; }
+
+      const finalName = schoolCode + '_' + file.name;
+
+      uploadBtn.disabled = true;
+      progressWrap.style.display = 'block';
+      footerNote.style.display = 'none';
+      animateProgress(progressFill, progressText);
+
+      try {
+        // Convert file to base64
+        const base64 = await toBase64(file);
+
+        const payload = {
+          fileName  : finalName,
+          mimeType  : file.type || 'application/octet-stream',
+          data      : base64,
+          folderId  : '1SGfVTfzyEN69pfafejLfGEvMzd-TN8Dr'
+        };
+
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+          method : 'POST',
+          body   : JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        progressFill.style.width = '100%';
+        progressText.textContent = 'Done!';
+
+        if (result.status === 'success') {
+          showStatus('success', `✅ File uploaded successfully!`);
+          uploadedFileName.textContent = '"' + finalName + '"';
+          footerNote.style.display = 'block';
+          footerNote.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Reset form
+          fileInput.value = '';
+          fileChosen.textContent = '';
+          document.getElementById('schoolCode').value = '';
+        } else {
+          showStatus('error', '❌ Upload failed: ' + (result.message || 'Unknown error.'));
+        }
+      } catch (err) {
+        showStatus('error', '❌ Network error. Please check your connection and try again.');
+        console.error(err);
+      } finally {
+        uploadBtn.disabled = false;
+        setTimeout(() => { progressWrap.style.display = 'none'; progressFill.style.width = '0%'; }, 2000);
+      }
+    }
+
+    function showStatus(type, msg) {
+      const box = document.getElementById('statusBox');
+      box.className = 'status-box ' + type;
+      box.innerHTML = msg;
+      box.style.display = 'block';
+    }
+
+    function toBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload  = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function animateProgress(fill, text) {
+      let p = 0;
+      const iv = setInterval(() => {
+        if (p >= 85) { clearInterval(iv); return; }
+        p += Math.random() * 8;
+        fill.style.width = Math.min(p, 85) + '%';
+        text.textContent = Math.round(Math.min(p, 85)) + '% uploading…';
+      }, 300);
+    }
+  </script>
+
+</body>
+</html>
