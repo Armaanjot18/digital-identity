@@ -337,32 +337,6 @@
       font-size: 0.85rem;
     }
 
-    .direct-drive-wrap {
-      text-align: center;
-      margin-top: 20px;
-      max-width: 560px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .btn-drive-direct {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 24px;
-      background: transparent;
-      border: 1.5px solid var(--gold);
-      border-radius: 10px;
-      color: var(--gold);
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.9rem;
-      transition: all 0.2s;
-    }
-    .btn-drive-direct:hover {
-      background: var(--gold);
-      color: var(--navy);
-      transform: translateY(-1px);
     }
 
     /* ─── FOOTER ─── */
@@ -496,14 +470,6 @@
       </div>
     </div>
 
-    <!-- Direct Drive Link -->
-    <div class="direct-drive-wrap">
-      <p style="font-size:0.82rem; color:rgba(255,255,255,0.45); margin-bottom:8px;">Alternative submission link:</p>
-      <a href="https://drive.google.com/drive/folders/1SGfVTfzyEN69pfafejLfGEvMzd-TN8Dr?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn-drive-direct">
-        📁 Open Official Google Drive Folder
-      </a>
-    </div>
-
     <!-- Success Confirmation -->
     <div class="footer-note" id="footerNote" style="display:none;">
       &#10003;&nbsp; <strong id="uploadedFileName"></strong> has been uploaded with your assigned school code only.
@@ -549,9 +515,7 @@
     });
     fileInput.addEventListener('change', updatePreview);
 
-    // ── Upload handler ──────────────────────────────────────
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykU_pJLCmZMkBjnQ0JdtK77zC2bd3eQlR69LMN3cvEp9QuC3zcprWi2zWVtid_Ohd1/exec';
-    const DRIVE_FOLDER_URL  = 'https://drive.google.com/drive/folders/1SGfVTfzyEN69pfafejLfGEvMzd-TN8Dr?usp=sharing';
 
     async function handleUpload() {
       const schoolCode = schoolCodeInput.value.trim();
@@ -610,22 +574,7 @@
         schoolCodeInput.value = '';
 
       } catch (err) {
-        showStatus('error', `
-          <div style="text-align:left;">
-            <strong>❌ Upload could not complete.</strong><br>
-            <span style="font-size:0.84rem; opacity:0.9;">
-              The Google Script endpoint returned an access/network error. You can upload directly to the Google Drive folder below:
-            </span>
-            <div style="margin-top:10px; text-align:center;">
-              <a href="${DRIVE_FOLDER_URL}" target="_blank" style="display:inline-block; padding:8px 16px; background:#c9a84c; color:#0d1b3e; border-radius:6px; font-weight:600; text-decoration:none;">
-                📁 Open Google Drive Folder to Upload
-              </a>
-            </div>
-            <p style="margin-top:8px; font-size:0.78rem; opacity:0.75; text-align:center;">
-              *Remember to rename your file as <code>${finalName}</code>
-            </p>
-          </div>
-        `);
+        showStatus('error', '❌ Upload failed. Please check your internet connection and try again.');
         console.error(err);
       } finally {
         uploadBtn.disabled = false;
