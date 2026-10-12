@@ -294,19 +294,76 @@
     /* ─── FOOTER NOTE ─── */
     .footer-note {
       text-align: center;
-      margin-top: 36px;
+      margin-top: 24px;
       padding: 16px 20px;
-      background: rgba(201,168,76,0.08);
-      border: 1px solid rgba(201,168,76,0.2);
+      background: rgba(34,197,94,0.12);
+      border: 1px solid rgba(34,197,94,0.4);
       border-radius: 10px;
       max-width: 560px;
       margin-left: auto;
       margin-right: auto;
-      color: rgba(255,255,255,0.65);
-      font-size: 0.82rem;
+      color: #86efac;
+      font-size: 0.9rem;
       line-height: 1.6;
     }
-    .footer-note strong { color: var(--gold); }
+    .footer-note strong { color: #ffffff; }
+
+    .code-instruction-banner {
+      background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.35);
+      border-radius: 12px;
+      padding: 16px 20px;
+      max-width: 560px;
+      margin: 28px auto 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      color: rgba(255,255,255,0.85);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+    .code-instruction-banner .banner-icon { font-size: 1.4rem; line-height: 1; }
+    .code-instruction-banner strong {
+      color: var(--gold-light);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .code-instruction-banner code {
+      background: rgba(0,0,0,0.35);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--gold);
+      font-family: monospace;
+      font-size: 0.85rem;
+    }
+
+    .direct-drive-wrap {
+      text-align: center;
+      margin-top: 20px;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .btn-drive-direct {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: transparent;
+      border: 1.5px solid var(--gold);
+      border-radius: 10px;
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .btn-drive-direct:hover {
+      background: var(--gold);
+      color: var(--navy);
+      transform: translateY(-1px);
+    }
 
     /* ─── FOOTER ─── */
     footer {
@@ -412,6 +469,10 @@
         </div>
       </div>
 
+      <div id="filePreview" style="display:none; margin-bottom:16px; padding:10px 14px; background:rgba(201,168,76,0.1); border-radius:8px; font-size:0.83rem; color:var(--gold-light);">
+        🏷️ <strong>Will be saved as:</strong> <span id="previewNameText" style="color:#ffffff; font-family:monospace;"></span>
+      </div>
+
       <button class="btn-upload" id="uploadBtn" onclick="handleUpload()">
         &#8679;&nbsp; Upload to Google Drive
       </button>
@@ -426,7 +487,24 @@
       <div class="status-box" id="statusBox"></div>
     </div>
 
-    <!-- Footer note -->
+    <!-- Permanent Notice Banner -->
+    <div class="code-instruction-banner">
+      <span class="banner-icon">⚠️</span>
+      <div>
+        <strong>Mandatory Submission Rule</strong>
+        <p>File name is uploaded with your assigned school code only (e.g. <code>SCH-042_logo.png</code>). Files without assigned school code may not be evaluated.</p>
+      </div>
+    </div>
+
+    <!-- Direct Drive Link -->
+    <div class="direct-drive-wrap">
+      <p style="font-size:0.82rem; color:rgba(255,255,255,0.45); margin-bottom:8px;">Alternative submission link:</p>
+      <a href="https://drive.google.com/drive/folders/1SGfVTfzyEN69pfafejLfGEvMzd-TN8Dr?usp=sharing" target="_blank" rel="noopener noreferrer" class="btn-drive-direct">
+        📁 Open Official Google Drive Folder
+      </a>
+    </div>
+
+    <!-- Success Confirmation -->
     <div class="footer-note" id="footerNote" style="display:none;">
       &#10003;&nbsp; <strong id="uploadedFileName"></strong> has been uploaded with your assigned school code only.
     </div>
@@ -437,11 +515,28 @@
   </footer>
 
   <script>
-    // ── Drag & Drop visual ──────────────────────────────────
+    // ── Drag & Drop visual & Real-time preview ───────────────
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
     const fileChosen = document.getElementById('fileChosen');
+    const schoolCodeInput = document.getElementById('schoolCode');
+    const filePreview = document.getElementById('filePreview');
+    const previewNameText = document.getElementById('previewNameText');
 
+    function updatePreview() {
+      const code = schoolCodeInput.value.trim();
+      const file = fileInput.files[0];
+      if (file) {
+        fileChosen.textContent = '📎 ' + file.name;
+        const finalName = (code ? code : '[SCHOOL_CODE]') + '_' + file.name;
+        previewNameText.textContent = finalName;
+        filePreview.style.display = 'block';
+      } else {
+        filePreview.style.display = 'none';
+      }
+    }
+
+    schoolCodeInput.addEventListener('input', updatePreview);
     dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
     dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
     dropZone.addEventListener('drop', e => {
@@ -449,19 +544,17 @@
       dropZone.classList.remove('dragover');
       if (e.dataTransfer.files.length) {
         fileInput.files = e.dataTransfer.files;
-        fileChosen.textContent = '📎 ' + e.dataTransfer.files[0].name;
+        updatePreview();
       }
     });
-    fileInput.addEventListener('change', () => {
-      if (fileInput.files.length) fileChosen.textContent = '📎 ' + fileInput.files[0].name;
-    });
+    fileInput.addEventListener('change', updatePreview);
 
     // ── Upload handler ──────────────────────────────────────
-    // GOOGLE_SCRIPT_URL — replace with your deployed Apps Script Web App URL
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykU_pJLCmZMkBjnQ0JdtK77zC2bd3eQlR69LMN3cvEp9QuC3zcprWi2zWVtid_Ohd1/exec';
+    const DRIVE_FOLDER_URL  = 'https://drive.google.com/drive/folders/1SGfVTfzyEN69pfafejLfGEvMzd-TN8Dr?usp=sharing';
 
     async function handleUpload() {
-      const schoolCode = document.getElementById('schoolCode').value.trim();
+      const schoolCode = schoolCodeInput.value.trim();
       const file       = fileInput.files[0];
       const statusBox  = document.getElementById('statusBox');
       const progressWrap = document.getElementById('progressWrap');
@@ -495,19 +588,17 @@
           folderId : '1SGfVTfzyEN69pfafejLfGEvMzd-TN8Dr'
         };
 
-        // Use no-cors to bypass CORS preflight — Apps Script receives and saves
-        // the file successfully; response is opaque so we show success after send.
         await fetch(GOOGLE_SCRIPT_URL, {
           method   : 'POST',
           mode     : 'no-cors',
           body     : JSON.stringify(payload)
         });
 
-        // File has been sent — show success
+        // File has been sent
         progressFill.style.width = '100%';
-        progressText.textContent = 'Done!';
+        progressText.textContent = 'Uploaded!';
 
-        showStatus('success', '✅ File uploaded successfully to Google Drive!');
+        showStatus('success', '✅ File submitted successfully to Google Drive!');
         uploadedFileName.textContent = '"' + finalName + '"';
         footerNote.style.display = 'block';
         footerNote.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -515,10 +606,26 @@
         // Reset form
         fileInput.value = '';
         fileChosen.textContent = '';
-        document.getElementById('schoolCode').value = '';
+        filePreview.style.display = 'none';
+        schoolCodeInput.value = '';
 
       } catch (err) {
-        showStatus('error', '❌ Upload failed. Please check your internet connection and try again.');
+        showStatus('error', `
+          <div style="text-align:left;">
+            <strong>❌ Upload could not complete.</strong><br>
+            <span style="font-size:0.84rem; opacity:0.9;">
+              The Google Script endpoint returned an access/network error. You can upload directly to the Google Drive folder below:
+            </span>
+            <div style="margin-top:10px; text-align:center;">
+              <a href="${DRIVE_FOLDER_URL}" target="_blank" style="display:inline-block; padding:8px 16px; background:#c9a84c; color:#0d1b3e; border-radius:6px; font-weight:600; text-decoration:none;">
+                📁 Open Google Drive Folder to Upload
+              </a>
+            </div>
+            <p style="margin-top:8px; font-size:0.78rem; opacity:0.75; text-align:center;">
+              *Remember to rename your file as <code>${finalName}</code>
+            </p>
+          </div>
+        `);
         console.error(err);
       } finally {
         uploadBtn.disabled = false;
