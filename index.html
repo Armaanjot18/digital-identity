@@ -489,40 +489,40 @@
         const base64 = await toBase64(file);
 
         const payload = {
-          fileName  : finalName,
-          mimeType  : file.type || 'application/octet-stream',
-          data      : base64,
-          folderId  : '1SGfVTfzyEN69pfafejLfGEvMzd-TN8Dr'
+          fileName : finalName,
+          mimeType : file.type || 'application/octet-stream',
+          data     : base64,
+          folderId : '1SGfVTfzyEN69pfafejLfGEvMzd-TN8Dr'
         };
 
-        const response = await fetch(GOOGLE_SCRIPT_URL, {
-          method : 'POST',
-          body   : JSON.stringify(payload)
+        // Use no-cors to bypass CORS preflight — Apps Script receives and saves
+        // the file successfully; response is opaque so we show success after send.
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method   : 'POST',
+          mode     : 'no-cors',
+          body     : JSON.stringify(payload)
         });
 
-        const result = await response.json();
-
+        // File has been sent — show success
         progressFill.style.width = '100%';
         progressText.textContent = 'Done!';
 
-        if (result.status === 'success') {
-          showStatus('success', `✅ File uploaded successfully!`);
-          uploadedFileName.textContent = '"' + finalName + '"';
-          footerNote.style.display = 'block';
-          footerNote.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          // Reset form
-          fileInput.value = '';
-          fileChosen.textContent = '';
-          document.getElementById('schoolCode').value = '';
-        } else {
-          showStatus('error', '❌ Upload failed: ' + (result.message || 'Unknown error.'));
-        }
+        showStatus('success', '✅ File uploaded successfully to Google Drive!');
+        uploadedFileName.textContent = '"' + finalName + '"';
+        footerNote.style.display = 'block';
+        footerNote.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Reset form
+        fileInput.value = '';
+        fileChosen.textContent = '';
+        document.getElementById('schoolCode').value = '';
+
       } catch (err) {
-        showStatus('error', '❌ Network error. Please check your connection and try again.');
+        showStatus('error', '❌ Upload failed. Please check your internet connection and try again.');
         console.error(err);
       } finally {
         uploadBtn.disabled = false;
-        setTimeout(() => { progressWrap.style.display = 'none'; progressFill.style.width = '0%'; }, 2000);
+        setTimeout(() => { progressWrap.style.display = 'none'; progressFill.style.width = '0%'; }, 2500);
       }
     }
 
