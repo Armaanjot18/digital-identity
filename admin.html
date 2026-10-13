@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin & Developer Portal — Digital Identity Submissions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ─── ADMIN SPECIFIC STYLES ─── */
+    .admin-header {
+      background: var(--navy-dark);
+      border-bottom: 1px solid rgba(201, 168, 76, 0.25);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .admin-brand h2 {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      color: var(--gold-light);
+      margin: 0;
+    }
+
+    .admin-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(201, 168, 76, 0.15);
+      color: var(--gold);
+      border: 1px solid rgba(201, 168, 76, 0.35);
+    }
+
+    .admin-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* ─── LOGIN OVERLAY ─── */
+    .login-wrapper {
+      max-width: 440px;
+      margin: 80px auto;
+      padding: 36px 30px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(201, 168, 76, 0.35);
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .lock-icon-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(201, 168, 76, 0.15);
+      border: 1px solid rgba(201, 168, 76, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin: 0 auto 18px;
+      color: var(--gold);
+    }
+
+    .password-input-group {
+      position: relative;
+      margin: 20px 0;
+    }
+
+    .password-input-group input {
+      width: 100%;
+      padding: 14px 44px 14px 16px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(201, 168, 76, 0.35);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .password-input-group input:focus {
+      border-color: var(--gold);
+    }
+
+    .toggle-pwd-btn {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    /* ─── KPI METRICS ─── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .kpi-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(201, 168, 76, 0.2);
+      border-radius: 12px;
+      padding: 20px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--gold);
+    }
+
+    .kpi-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 6px;
+    }
+
+    .kpi-val {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      line-height: 1.1;
+    }
+
+    .kpi-sub {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.45);
+      margin-top: 4px;
+    }
+
+    /* ─── SEARCH & FILTER TOOLBAR ─── */
+    .toolbar-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-input-wrap {
+      flex: 1;
+      min-width: 260px;
+      position: relative;
+    }
+
+    .search-input-wrap input {
+      width: 100%;
+      padding: 12px 16px 12px 40px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(201, 168, 76, 0.25);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .search-input-wrap .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.95rem;
+    }
+
+    /* ─── DATA TABLE ─── */
+    .table-container {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(201, 168, 76, 0.2);
+      border-radius: 12px;
+      overflow-x: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    .admin-table th {
+      background: rgba(8, 17, 39, 0.8);
+      color: var(--gold-light);
+      font-weight: 600;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(201, 168, 76, 0.25);
+      white-space: nowrap;
+      letter-spacing: 0.5px;
+    }
+
+    .admin-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.85);
+      vertical-align: middle;
+    }
+
+    .admin-table tbody tr:hover {
+      background: rgba(201, 168, 76, 0.06);
+    }
+
+    .school-code-badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(201, 168, 76, 0.15);
+      color: var(--gold-light);
+      border: 1px solid rgba(201, 168, 76, 0.35);
+    }
+
+    .file-name-cell {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: #fff;
+      word-break: break-all;
+    }
+
+    .timestamp-cell {
+      white-space: nowrap;
+      font-size: 0.82rem;
+    }
+
+    .time-relative {
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 0.75rem;
+      display: block;
+    }
+
+    .btn-view-drive {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: rgba(201, 168, 76, 0.15);
+      border: 1px solid rgba(201, 168, 76, 0.35);
+      border-radius: 6px;
+      color: var(--gold-light);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .btn-view-drive:hover {
+      background: var(--gold);
+      color: var(--navy);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .empty-state .icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ LOGIN SCREEN (SHOWN WHEN NOT LOGGED IN) ═══ -->
+  <div id="loginScreen" class="main-wrapper" style="display:none;">
+    <div class="login-wrapper">
+      <div class="lock-icon-circle">🔒</div>
+      <h2 style="font-family: var(--font-heading); color: var(--gold-light); font-size: 1.6rem; margin-bottom: 6px;">
+        Developer &amp; Admin Access
+      </h2>
+      <p style="font-size:0.85rem; color:rgba(255,255,255,0.6);">
+        Enter the administrative security password to inspect Digital Identity event submissions.
+      </p>
+
+      <form onsubmit="handleLogin(event)">
+        <div class="password-input-group">
+          <input 
+            type="password" 
+            id="passwordInput" 
+            placeholder="Enter admin passcode" 
+            autocomplete="current-password"
+            required
+          />
+          <button type="button" class="toggle-pwd-btn" onclick="togglePasswordVisibility()">👁️</button>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width:100%;">
+          <span>Unlock Admin Dashboard</span>
+          <span>→</span>
+        </button>
+
+        <div id="loginError" style="display:none; margin-top:14px; font-size:0.84rem; color:#fca5a5; background:rgba(239,68,68,0.12); padding:8px; border-radius:6px; border:1px solid rgba(239,68,68,0.3);">
+          ❌ Incorrect password. Please try again.
+        </div>
+
+        <p style="margin-top:20px; font-size:0.75rem; color:rgba(255,255,255,0.35);">
+          Default Passcode: <code>admin2026</code> (Customizable inside portal)
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══ DASHBOARD SCREEN (SHOWN ON SUCCESSFUL LOGIN) ═══ -->
+  <div id="dashboardScreen" style="display:none; flex-direction:column; min-height:100vh;">
+    
+    <!-- Top Bar -->
+    <header class="admin-header">
+      <div class="admin-brand">
+        <h2>Digital Identity</h2>
+        <span class="admin-badge">Admin &amp; Dev Portal</span>
+      </div>
+
+      <div class="admin-controls">
+        <button class="btn-secondary" onclick="loadSubmissions(true)" id="refreshBtn" title="Fetch latest submissions">
+          🔄 Refresh
+        </button>
+        <button class="btn-secondary" onclick="exportToCSV()" title="Download CSV Spreadsheet">
+          📥 Export CSV
+        </button>
+        <a href="https://drive.google.com/drive/folders/1SGfVTfzyEN69pfafejLfGEvMzd-TN8Dr" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+          📁 Open Google Drive
+        </a>
+        <button class="btn-secondary" onclick="openChangePasswordModal()" title="Change Passcode">
+          ⚙️ Passcode
+        </button>
+        <button class="btn-danger-outline" onclick="handleLogout()" title="End Session">
+          🚪 Exit
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-wrapper" style="padding-top: 24px;">
+
+      <!-- Status Banner -->
+      <div id="scriptUpdateNotice" style="display:none; background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.35); border-radius:10px; padding:16px 20px; margin-bottom:24px; font-size:0.88rem; color:rgba(255,255,255,0.9);">
+        <div style="display:flex; align-items:flex-start; gap:12px;">
+          <span style="font-size:1.4rem;">💡</span>
+          <div>
+            <strong style="color:var(--gold-light);">Google Apps Script Update Available:</strong>
+            <p style="margin-top:2px;">
+              To stream real-time submissions automatically directly from your Google Drive folder into this dashboard, update your Google Apps Script project with the latest <a href="https://github.com/Armaanjot18/digital-identity/blob/main/apps-script-backend.js" target="_blank" style="color:var(--gold); text-decoration:underline;">apps-script-backend.js</a> and deploy a New Version.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPI Metrics Cards -->
+      <section class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Total Submissions</div>
+          <div class="kpi-val" id="kpiTotal">0</div>
+          <div class="kpi-sub">Uploaded files in folder</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Participating Schools</div>
+          <div class="kpi-val" id="kpiSchools">0</div>
+          <div class="kpi-sub">Unique institutional codes</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Latest Activity</div>
+          <div class="kpi-val" id="kpiLatestTime" style="font-size:1.3rem;">-</div>
+          <div class="kpi-sub" id="kpiLatestSchool">No activity yet</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-label">Total Storage</div>
+          <div class="kpi-val" id="kpiStorage">0 MB</div>
+          <div class="kpi-sub">Drive space utilized</div>
+        </div>
+      </section>
+
+      <!-- Search & Filters Toolbar -->
+      <div class="toolbar-bar">
+        <div class="search-input-wrap">
+          <span class="search-icon">🔍</span>
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Search by School Code or File Name…" 
+            oninput="filterSubmissions()"
+          />
+        </div>
+
+        <div style="display:flex; gap:10px; align-items:center;">
+          <span style="font-size:0.82rem; color:rgba(255,255,255,0.6);">Sort:</span>
+          <select id="sortSelect" onchange="sortSubmissions()" style="background:rgba(255,255,255,0.06); border:1px solid rgba(201,168,76,0.3); border-radius:6px; color:#fff; padding:8px 12px; font-size:0.85rem; outline:none;">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="code_asc">School Code (A-Z)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Live Submissions Table -->
+      <div class="table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th style="width:40px;">#</th>
+              <th>School Code</th>
+              <th>File Name</th>
+              <th>Upload Timestamp</th>
+              <th>Size</th>
+              <th style="text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="submissionsTableBody">
+            <tr>
+              <td colspan="6" class="empty-state">
+                <div class="icon">⏳</div>
+                <div>Fetching live submissions from Google Drive…</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; font-size:0.8rem; color:rgba(255,255,255,0.45);">
+        <span id="resultsCount">Showing 0 submissions</span>
+        <span>Google Drive Depository: <code>1SGfVTfzyEN69pfafejLfGEvMzd-TN8Dr</code></span>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      &copy; 2026 Digital Identity &bull; Authorized Event Administration Portal &bull; <a href="index.html" style="color:var(--gold); text-decoration:none;">Public Website</a>
+    </footer>
+
+  </div>
+
+  <!-- ═══ CHANGE PASSWORD MODAL ═══ -->
+  <div class="modal-overlay" id="changePwdModal">
+    <div class="modal-content" style="max-width:440px;">
+      <div class="modal-header">
+        <h3>Change Admin Passcode</h3>
+        <button class="btn-close" onclick="closeChangePasswordModal()">&times;</button>
+      </div>
+      <div style="padding:10px 0;">
+        <label style="display:block; font-size:0.85rem; color:var(--gold-light); margin-bottom:6px;">New Admin Passcode</label>
+        <input 
+          type="password" 
+          id="newPwdInput" 
+          placeholder="Enter new secret passcode"
+          style="width:100%; padding:12px; background:rgba(255,255,255,0.08); border:1px solid rgba(201,168,76,0.3); border-radius:8px; color:#fff; font-size:0.95rem; margin-bottom:16px;"
+        />
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          <button class="btn-secondary" onclick="closeChangePasswordModal()">Cancel</button>
+          <button class="btn-primary" onclick="saveNewPassword()">Save Passcode</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SCRIPT LOGIC ═══ -->
+  <script>
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykU_pJLCmZMkBjnQ0JdtK77zC2bd3eQlR69LMN3cvEp9QuC3zcprWi2zWVtid_Ohd1/exec';
+    const DRIVE_FOLDER_ID   = '1SGfVTfzyEN69pfafejLfGEvMzd-TN8Dr';
+    const DEFAULT_PASSCODE  = 'admin2026';
+    const AUTH_SESSION_KEY  = 'digital_identity_admin_auth';
+    const STORED_PWD_KEY    = 'digital_identity_admin_pwd';
+
+    let allSubmissions = [];
+    let displayedSubmissions = [];
+
+    // ─── AUTHENTICATION LOGIC ───
+    function getStoredPasscode() {
+      return localStorage.getItem(STORED_PWD_KEY) || DEFAULT_PASSCODE;
+    }
+
+    function checkAuth() {
+      const isAuth = sessionStorage.getItem(AUTH_SESSION_KEY) === 'true';
+      if (isAuth) {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('dashboardScreen').style.display = 'flex';
+        loadSubmissions();
+      } else {
+        document.getElementById('loginScreen').style.display = 'block';
+        document.getElementById('dashboardScreen').style.display = 'none';
+      }
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const entered = document.getElementById('passwordInput').value;
+      const expected = getStoredPasscode();
+
+      if (entered === expected) {
+        sessionStorage.setItem(AUTH_SESSION_KEY, 'true');
+        document.getElementById('loginError').style.display = 'none';
+        checkAuth();
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+        document.getElementById('passwordInput').focus();
+      }
+    }
+
+    function handleLogout() {
+      sessionStorage.removeItem(AUTH_SESSION_KEY);
+      document.getElementById('passwordInput').value = '';
+      checkAuth();
+    }
+
+    function togglePasswordVisibility() {
+      const inp = document.getElementById('passwordInput');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+    }
+
+    function openChangePasswordModal() {
+      document.getElementById('newPwdInput').value = '';
+      document.getElementById('changePwdModal').classList.add('open');
+    }
+
+    function closeChangePasswordModal() {
+      document.getElementById('changePwdModal').classList.remove('open');
+    }
+
+    function saveNewPassword() {
+      const newPwd = document.getElementById('newPwdInput').value.trim();
+      if (!newPwd) {
+        alert('Passcode cannot be empty.');
+        return;
+      }
+      localStorage.setItem(STORED_PWD_KEY, newPwd);
+      closeChangePasswordModal();
+      alert('✅ Admin passcode successfully updated!');
+    }
+
+    // ─── DATA FETCHING & FORMATTING ───
+    function formatBytes(bytes) {
+      if (!bytes || bytes === 0) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function formatTimestamp(isoStr) {
+      if (!isoStr) return { full: '-', relative: '' };
+      const d = new Date(isoStr);
+      if (isNaN(d.getTime())) return { full: isoStr, relative: '' };
+
+      const options = { 
+        month: 'short', 
+        day: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit',
+        hour12: true 
+      };
+      const full = d.toLocaleDateString(undefined, options);
+
+      // Relative calculation
+      const diffSec = Math.floor((new Date() - d) / 1000);
+      let relative = '';
+      if (diffSec < 60) relative = 'Just now';
+      else if (diffSec < 3600) relative = `${Math.floor(diffSec / 60)}m ago`;
+      else if (diffSec < 86400) relative = `${Math.floor(diffSec / 3600)}h ago`;
+      else relative = `${Math.floor(diffSec / 86400)}d ago`;
+
+      return { full, relative };
+    }
+
+    function extractSchoolCode(filename) {
+      if (!filename) return 'UNKNOWN';
+      const parts = filename.split('_');
+      if (parts.length > 1 && parts[0].trim().length > 0) {
+        return parts[0].trim().toUpperCase();
+      }
+      return 'UNTAGGED';
+    }
+
+    async function loadSubmissions(showNotice = false) {
+      const tbody = document.getElementById('submissionsTableBody');
+      const refreshBtn = document.getElementById('refreshBtn');
+
+      if (refreshBtn) refreshBtn.textContent = '⏳ Loading…';
+
+      try {
+        const fetchUrl = `${GOOGLE_SCRIPT_URL}?action=getSubmissions&folderId=${DRIVE_FOLDER_ID}&t=${Date.now()}`;
+        const resp = await fetch(fetchUrl);
+        const data = await resp.json();
+
+        if (data.status === 'success' && Array.isArray(data.submissions)) {
+          allSubmissions = data.submissions;
+          displayedSubmissions = [...allSubmissions];
+          renderDashboard();
+          if (showNotice) alert('✅ Live submissions updated successfully!');
+        } else {
+          // If Apps Script has not yet been upgraded with action=getSubmissions
+          document.getElementById('scriptUpdateNotice').style.display = 'block';
+          allSubmissions = [];
+          displayedSubmissions = [];
+          renderDashboard();
+        }
+      } catch (err) {
+        console.warn('Live API response fallback:', err);
+        document.getElementById('scriptUpdateNotice').style.display = 'block';
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="empty-state">
+              <div class="icon">📁</div>
+              <div style="font-size:1.1rem; color:var(--gold-light); margin-bottom:6px;">Google Drive Folder Connected</div>
+              <p style="font-size:0.85rem; max-width:500px; margin:0 auto 16px;">
+                Files uploaded by participants land directly inside your Google Drive depository folder. Click below to inspect all raw files directly on Google Drive:
+              </p>
+              <a href="https://drive.google.com/drive/folders/${DRIVE_FOLDER_ID}" target="_blank" class="btn-primary" style="display:inline-flex;">
+                📂 Open Submissions in Google Drive
+              </a>
+            </td>
+          </tr>
+        `;
+      } finally {
+        if (refreshBtn) refreshBtn.textContent = '🔄 Refresh';
+      }
+    }
+
+    function renderDashboard() {
+      // Update KPIs
+      const total = allSubmissions.length;
+      document.getElementById('kpiTotal').textContent = total;
+
+      const schools = new Set();
+      let totalBytes = 0;
+      allSubmissions.forEach(s => {
+        schools.add(extractSchoolCode(s.name));
+        totalBytes += (s.size || 0);
+      });
+
+      document.getElementById('kpiSchools').textContent = schools.size;
+      document.getElementById('kpiStorage').textContent = formatBytes(totalBytes);
+
+      if (allSubmissions.length > 0) {
+        const latest = allSubmissions[0];
+        const t = formatTimestamp(latest.created);
+        document.getElementById('kpiLatestTime').textContent = t.relative || t.full;
+        document.getElementById('kpiLatestSchool').textContent = `From ${extractSchoolCode(latest.name)}`;
+      } else {
+        document.getElementById('kpiLatestTime').textContent = '-';
+        document.getElementById('kpiLatestSchool').textContent = 'No submissions yet';
+      }
+
+      filterSubmissions();
+    }
+
+    function filterSubmissions() {
+      const query = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+
+      displayedSubmissions = allSubmissions.filter(s => {
+        const code = extractSchoolCode(s.name).toLowerCase();
+        const name = (s.name || '').toLowerCase();
+        return code.includes(query) || name.includes(query);
+      });
+
+      sortSubmissions(false);
+      renderTable();
+    }
+
+    function sortSubmissions(reRender = true) {
+      const sortType = document.getElementById('sortSelect').value;
+
+      displayedSubmissions.sort((a, b) => {
+        if (sortType === 'newest') {
+          return new Date(b.created || 0) - new Date(a.created || 0);
+        } else if (sortType === 'oldest') {
+          return new Date(a.created || 0) - new Date(b.created || 0);
+        } else if (sortType === 'code_asc') {
+          return extractSchoolCode(a.name).localeCompare(extractSchoolCode(b.name));
+        }
+        return 0;
+      });
+
+      if (reRender) renderTable();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('submissionsTableBody');
+      const countLabel = document.getElementById('resultsCount');
+
+      countLabel.textContent = `Showing ${displayedSubmissions.length} of ${allSubmissions.length} submissions`;
+
+      if (displayedSubmissions.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="empty-state">
+              <div class="icon">📭</div>
+              <div>No submissions match your query.</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      let html = '';
+      displayedSubmissions.forEach((s, idx) => {
+        const code = extractSchoolCode(s.name);
+        const t = formatTimestamp(s.created);
+        const sizeStr = formatBytes(s.size);
+        const driveUrl = s.url || `https://drive.google.com/file/d/${s.id}/view`;
+
+        html += `
+          <tr>
+            <td style="color:rgba(255,255,255,0.4);">${idx + 1}</td>
+            <td><span class="school-code-badge">${code}</span></td>
+            <td class="file-name-cell">${escapeHtml(s.name)}</td>
+            <td class="timestamp-cell">
+              <span>${t.full}</span>
+              <span class="time-relative">${t.relative}</span>
+            </td>
+            <td>${sizeStr}</td>
+            <td style="text-align:right;">
+              <a href="${driveUrl}" target="_blank" rel="noopener noreferrer" class="btn-view-drive">
+                <span>View File</span>
+                <span>↗</span>
+              </a>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function exportToCSV() {
+      if (allSubmissions.length === 0) {
+        alert('No submissions available to export.');
+        return;
+      }
+
+      let csv = 'Index,School_Code,File_Name,Timestamp_ISO,Timestamp_Formatted,File_Size_Bytes,Drive_URL\n';
+
+      allSubmissions.forEach((s, idx) => {
+        const code = extractSchoolCode(s.name);
+        const t = formatTimestamp(s.created);
+        const cleanName = (s.name || '').replace(/"/g, '""');
+        const driveUrl = s.url || `https://drive.google.com/file/d/${s.id}/view`;
+
+        csv += `${idx + 1},"${code}","${cleanName}","${s.created || ''}","${t.full}",${s.size || 0},"${driveUrl}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `digital_identity_submissions_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Initialize check on page load
+    window.addEventListener('DOMContentLoaded', checkAuth);
+  </script>
+
+</body>
+</html>
