@@ -1,52 +1,48 @@
-# 🎨 Digital Identity — Event Submission Website
+# 🎨 Digital Identity — Event Management & Submission Portal
 
-A beautifully designed event website for the **Digital Identity** logo designing competition. Participants can read the rules and submit their designs directly to Google Drive.
-
----
-
-## 🌐 Live Site
-Deployed via **GitHub Pages** — visit `https://Armaanjot18.github.io/digital-identity`
+Official web platform for the **Digital Identity** logo designing competition (Event No. 4).
 
 ---
 
-## ✨ Features
-- **Hero header** with gold & navy event branding
-- **Rules section** — all 10 competition rules in card layout
-- **Upload section** — accepts **all file types**, renames file as `SCHOOLCODE_filename`, and uploads directly to Google Drive
-- **Success confirmation** — shows *"[filename] has been uploaded with your assigned school code only."*
+## 🌐 Live Website
+- **Custom Domain:** [http://curious.rocks](http://curious.rocks)
+- **GitHub Pages:** [https://Armaanjot18.github.io/digital-identity](https://Armaanjot18.github.io/digital-identity)
 
 ---
 
-## ⚙️ Setup: Connect Google Drive Upload
+## 🧭 Multi-Page Workflow
 
-The upload requires a **Google Apps Script Web App** as the backend middleware.
+1. **Overview & Rules (`/` or `index.html`)**:
+   - Event branding, 10 official competition rules.
+   - Procedure to add files (Max 50 MB, PNG/JPEG/JPG/PDF only, block HTML/SVG/WEBP, mandatory preservation rule).
+   - "Proceed to Theme & Start Competition" button.
 
-### Step-by-step (one time only):
+2. **Theme & Timer (`/theme.html`)**:
+   - On-the-spot theme announcement workspace.
+   - Interactive 60-Minute countdown clock with pause, resume, and reset.
+   - Visual alerts at 10m & 5m remaining.
+   - "Proceed to Submit / Upload File" button.
 
-1. Go to [script.google.com](https://script.google.com) → **New project**
-2. Delete existing code, paste everything from [`apps-script-backend.js`](apps-script-backend.js)
-3. Click **Deploy → New Deployment**
-   - Type: **Web App**
-   - Execute as: **Me**
-   - Who has access: **Anyone**
-4. Click **Deploy** → **copy the Web App URL**
-5. Open [`index.html`](index.html), find this line:
-   ```js
-   const GOOGLE_SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
-   ```
-   Replace `YOUR_APPS_SCRIPT_URL_HERE` with your copied URL.
-6. Commit & push — uploads will now land in your Google Drive folder!
+3. **Dedicated Submission Portal (`/upload.html`)**:
+   - Input for Assigned School Code.
+   - File selector with drag & drop.
+   - Real-time client-side validation (50 MB limit, strict format whitelist).
+   - **👁️ Preview File** modal (inspect design dimensions, preview image, target filename).
+   - **✕ Clear Selection** button.
+   - Direct transmission to Google Drive with progress animation.
+
+4. **Admin & Developer Portal (`/admin.html`)**:
+   - **Password-protected** gate (Default: `admin2026`, customizable inside portal).
+   - Real-time submission logs streaming from Google Drive.
+   - Shows School Code, File Name, Upload Timestamp, and Size.
+   - Live search & sorting (by code, newest, oldest).
+   - **📥 Export to CSV** spreadsheet button.
+   - Direct links to open/inspect files inside Google Drive.
 
 ---
 
-## 📁 Google Drive Folder
-Files are saved to: [Digital Identity Submissions](https://drive.google.com/drive/folders/1SGfVTfzyEN69pfafejLfGEvMzd-TN8Dr)
+## ⚙️ Google Apps Script Backend (`apps-script-backend.js`)
 
-Each file is automatically renamed: **`SCHOOLCODE_originalfilename.ext`**
-
----
-
-## 🛠 Tech Stack
-- Pure HTML / CSS / JavaScript (no frameworks)
-- Google Apps Script (serverless backend)
-- GitHub Pages (hosting)
+Connects the web frontend with Google Drive:
+- **`doPost`**: Receives base64-encoded files and saves them to the Google Drive folder (`1SGfVTfzyEN69pfafejLfGEvMzd-TN8Dr`).
+- **`doGet?action=getSubmissions`**: Fetches the list of all uploaded files with timestamps and direct links for the Admin portal.
