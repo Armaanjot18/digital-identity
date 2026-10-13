@@ -1,19 +1,16 @@
 /**
  * ╔══════════════════════════════════════════════════════╗
  *  Digital Identity – Google Apps Script Backend
- *  Receives file data from the website and saves it
- *  directly into the specified Google Drive folder.
+ *  1. Receives file uploads and saves to Google Drive.
+ *  2. Serves submission logs (filenames, timestamps, links)
+ *     for the Admin/Developer Dashboard.
  * ╚══════════════════════════════════════════════════════╝
  *
- * HOW TO DEPLOY (one-time setup):
- *  1. Go to https://script.google.com/ → New Project
- *  2. Delete any existing code, paste ALL of this file's content
- *  3. Click "Deploy" → "New Deployment"
- *  4. Type: Web App
- *  5. Execute as: Me
- *  6. Who has access: Anyone
- *  7. Click Deploy → copy the Web App URL
- *  8. In index.html replace  YOUR_APPS_SCRIPT_URL_HERE  with that URL
+ * HOW TO UPDATE / DEPLOY:
+ *  1. Open your project at https://script.google.com/
+ *  2. Replace Code.gs with this entire file.
+ *  3. Click "Deploy" → "Manage Deployments" → ✏️ Edit
+ *  4. Select "New version" under Version → Click "Deploy"
  */
 
 function doPost(e) {
@@ -22,7 +19,7 @@ function doPost(e) {
     var fileName = payload.fileName;
     var mimeType = payload.mimeType;
     var data     = payload.data;          // base64 string
-    var folderId = payload.folderId;      // Drive folder ID
+    var folderId = payload.folderId || '1SGfVTfzyEN69pfafejLfGEvMzd-TN8Dr';
 
     // Decode base64 → Blob
     var decoded = Utilities.base64Decode(data);
@@ -33,7 +30,12 @@ function doPost(e) {
     var file   = folder.createFile(blob);
 
     return ContentService
-      .createTextOutput(JSON.stringify({ status: 'success', fileId: file.getId(), fileName: fileName }))
+      .createTextOutput(JSON.stringify({
+        status: 'success',
+        fileId: file.getId(),
+        fileName: fileName,
+        timestamp: new Date().toISOString()
+      }))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (err) {
@@ -43,9 +45,57 @@ function doPost(e) {
   }
 }
 
-// Handle CORS preflight (OPTIONS)
+/**
+ * GET requests:
+ * 1. Default: returns status "ok" (health check)
+ * 2. action=getSubmissions: lists all files in the Drive folder with timestamps & links
+ */
 function doGet(e) {
-  return ContentService
-    .createTextOutput(JSON.stringify({ status: 'ok', message: 'Digital Identity Upload API is running.' }))
-    .setMimeType(ContentService.MimeType.JSON);
+  try {
+    var action = (e && e.parameter && e.parameter.action) ? e.parameter.action : '';
+
+    if (action === 'getSubmissions') {
+      var folderId = (e && e.parameter && e.parameter.folderId) ? e.parameter.folderId : '1SGfVTfzyEN69pfafejLfGEvMzd-TN8Dr';
+      var folder = DriveApp.getFolderById(folderId);
+      var files = folder.getFiles();
+      var submissions = [];
+
+      while (files.hasNext()) {
+        var file = files.next();
+        submissions.push({
+          id: file.getId(),
+          name: file.getName(),
+          size: file.getSize(),
+          mimeType: file.getMimeType(),
+          created: file.getDateCreated().toISOString(),
+          updated: file.getLastUpdated().toISOString(),
+          url: file.getUrl()
+        });
+      }
+
+      // Sort newest submission first
+      submissions.sort(function(a, b) {
+        return new Date(b.created).getTime() - new Date(a.created).getTime();
+      });
+
+      return ContentService
+        .createTextOutput(JSON.stringify({
+          status: 'success',
+          count: submissions.length,
+          folderId: folderId,
+          submissions: submissions
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // Default health check
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: 'ok', message: 'Digital Identity Upload API is running.' }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: 'error', message: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }
