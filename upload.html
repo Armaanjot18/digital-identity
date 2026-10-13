@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digital Identity — Dedicated Submission Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- ═══ STEP NAVIGATION ═══ -->
+  <nav class="step-nav-bar">
+    <div class="step-container">
+      <a href="index.html" class="step-item completed">
+        <div class="step-circle">✓</div>
+        <span class="step-label">Overview & Rules</span>
+      </a>
+      <div class="step-divider filled"></div>
+      <a href="theme.html" class="step-item completed">
+        <div class="step-circle">✓</div>
+        <span class="step-label">Theme & Timer</span>
+      </a>
+      <div class="step-divider filled"></div>
+      <div class="step-item active">
+        <div class="step-circle">3</div>
+        <span class="step-label">File Submission</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ HERO SECTION ═══ -->
+  <header class="hero">
+    <div class="event-badge">◈ Event No. 4 ◈</div>
+    <h1>Digital Identity</h1>
+    <p class="hero-subtitle">Dedicated Submission Portal — Validate and upload your competition design directly to Google Drive.</p>
+  </header>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main class="main-wrapper">
+
+    <!-- ═══ SUBMISSION REQUIREMENTS SUMMARY ═══ -->
+    <section class="guidelines-card">
+      <div class="guidelines-header">
+        <div>
+          <h3>📋 Submission Rules & Validation Checks</h3>
+          <p style="font-size:0.85rem; color:rgba(255,255,255,0.65);">Verify your file matches all event requirements before submitting:</p>
+        </div>
+      </div>
+
+      <div class="guidelines-grid">
+        <div class="guideline-box">
+          <div class="icon">📦</div>
+          <h4>Size Restriction</h4>
+          <p>Maximum allowed size: <strong>50 MB</strong>. Larger files will be blocked automatically.</p>
+        </div>
+
+        <div class="guideline-box">
+          <div class="icon">✅</div>
+          <h4>Accepted Formats</h4>
+          <p>Allowed extensions:</p>
+          <div class="tag-list">
+            <span class="tag-allowed">.png</span>
+            <span class="tag-allowed">.jpeg</span>
+            <span class="tag-allowed">.jpg</span>
+            <span class="tag-allowed">.pdf</span>
+          </div>
+        </div>
+
+        <div class="guideline-box">
+          <div class="icon">🚫</div>
+          <h4>Strictly Blocked</h4>
+          <p>Web code & vector files are rejected:</p>
+          <div class="tag-list">
+            <span class="tag-forbidden">.html</span>
+            <span class="tag-forbidden">.svg</span>
+            <span class="tag-forbidden">.webp</span>
+          </div>
+        </div>
+
+        <div class="guideline-box">
+          <div class="icon">🏷️</div>
+          <h4>School Code Naming</h4>
+          <p>Files are automatically saved as: <code>[SchoolCode]_[FileName]</code>.</p>
+        </div>
+      </div>
+
+      <!-- Mandatory Preservation Warning -->
+      <div class="critical-warning">
+        <span style="font-size: 1.5rem; line-height: 1;">⚠️</span>
+        <div>
+          <strong>MANDATORY PRESERVATION:</strong>
+          <p style="margin-top:2px;">
+            The original image/file <strong>must NOT be deleted from your device</strong> after uploading. Keep your source design on your laptop until evaluation is finalized.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ DEDICATED UPLOAD CARD ═══ -->
+    <section class="upload-card">
+      <h3 style="font-family: var(--font-heading); color: var(--gold-light); font-size: 1.5rem; text-align: center; margin-bottom: 24px;">
+        Upload Your Logo Design
+      </h3>
+
+      <!-- 1. School Code Input -->
+      <div class="form-group">
+        <label for="schoolCode">🏫 Assigned School Code *</label>
+        <input 
+          type="text" 
+          id="schoolCode" 
+          placeholder="e.g. SCH-042 or DPS-108" 
+          maxlength="30" 
+          autocomplete="off"
+        />
+        <span style="font-size:0.75rem; color:rgba(255,255,255,0.45); margin-top:4px; display:block;">
+          Enter your institution's designated code. Personal names are not accepted.
+        </span>
+      </div>
+
+      <!-- 2. Drop Zone & File Selector -->
+      <div class="form-group">
+        <label>📁 Select Competition File (Max 50 MB) *</label>
+        <div class="drop-zone" id="dropZone">
+          <input 
+            type="file" 
+            id="fileInput" 
+            accept=".png,.jpeg,.jpg,.pdf"
+          />
+          <div class="drop-icon">☁️</div>
+          <div class="drop-label">Drag &amp; drop design file here, or <span>browse</span></div>
+          <div class="drop-formats">Accepted: PNG, JPEG, JPG, PDF &bull; Max 50 MB</div>
+          <div class="file-info-chip" id="fileInfoChip" style="display:none;"></div>
+        </div>
+      </div>
+
+      <!-- Live Computed Name Display -->
+      <div id="fileNamingBadge" style="display:none; margin-bottom:18px; padding:12px 14px; background:rgba(201,168,76,0.1); border-left:3px solid var(--gold); border-radius:6px; font-size:0.85rem; color:var(--gold-light);">
+        🏷️ <strong>File will be uploaded as:</strong> 
+        <span id="computedFileName" style="color:#ffffff; font-family:monospace; margin-left:4px;"></span>
+      </div>
+
+      <!-- 3. Button Controls: Preview, Clear, Upload -->
+      <div class="button-row">
+        <button type="button" class="btn-secondary" id="previewBtn" onclick="openPreviewModal()" disabled>
+          👁️ Preview File
+        </button>
+        <button type="button" class="btn-danger-outline" id="clearBtn" onclick="clearUploadForm()">
+          ✕ Clear Selection
+        </button>
+      </div>
+
+      <div style="margin-top: 14px;">
+        <button type="button" class="btn-primary" id="uploadBtn" onclick="handleUpload()" style="width: 100%;">
+          <span>🚀 Upload to Google Drive</span>
+        </button>
+      </div>
+
+      <!-- Progress Indicator -->
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText">Uploading to Google Drive…</div>
+      </div>
+
+      <!-- Status Alert Box -->
+      <div class="status-box" id="statusBox"></div>
+    </section>
+
+    <!-- ═══ CONFIRMATION / FOOTER NOTE ═══ -->
+    <div class="submission-note" id="confirmationNote" style="display:none;">
+      ✓ <strong id="uploadedFileName"></strong> has been uploaded with your assigned school code only.
+    </div>
+
+    <!-- Navigation links -->
+    <div style="text-align: center; margin-top: 24px;">
+      <a href="theme.html" style="color: rgba(255,255,255,0.6); font-size: 0.88rem; text-decoration: none;">
+        ← Back to Theme &amp; Timer
+      </a>
+    </div>
+
+  </main>
+
+  <!-- ═══ PREVIEW MODAL ═══ -->
+  <div class="modal-overlay" id="previewModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Design Preview</h3>
+        <button class="btn-close" onclick="closePreviewModal()">&times;</button>
+      </div>
+      <div class="preview-body">
+        <div class="preview-media-container" id="previewMediaContainer">
+          <!-- Dynamic media injected here -->
+        </div>
+        <div class="preview-meta">
+          <div><strong>Original Name:</strong> <span id="metaOrigName">-</span></div>
+          <div><strong>Uploaded As:</strong> <span id="metaTargetName" style="color:var(--gold-light); font-family:monospace;">-</span></div>
+          <div><strong>File Size:</strong> <span id="metaSize">-</span></div>
+          <div><strong>MIME Type:</strong> <span id="metaType">-</span></div>
+        </div>
+        <div style="margin-top: 18px; text-align: right;">
+          <button class="btn-secondary" onclick="closePreviewModal()">Close Preview</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2026 Digital Identity &bull; Logo Designing Competition &bull; All Rights Reserved
+  </footer>
+
+  <!-- ═══ SCRIPT LOGIC ═══ -->
+  <script>
+    // Configuration
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbykU_pJLCmZMkBjnQ0JdtK77zC2bd3eQlR69LMN3cvEp9QuC3zcprWi2zWVtid_Ohd1/exec';
+    const DRIVE_FOLDER_ID   = '1SGfVTfzyEN69pfafejLfGEvMzd-TN8Dr';
+    const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024; // 50 MB
+    const FORBIDDEN_EXTENSIONS = ['html', 'htm', 'svg', 'webp', 'exe', 'bat', 'sh'];
+    const ALLOWED_EXTENSIONS   = ['png', 'jpeg', 'jpg', 'pdf'];
+
+    // DOM Elements
+    const schoolCodeInput   = document.getElementById('schoolCode');
+    const fileInput         = document.getElementById('fileInput');
+    const dropZone          = document.getElementById('dropZone');
+    const fileInfoChip      = document.getElementById('fileInfoChip');
+    const fileNamingBadge   = document.getElementById('fileNamingBadge');
+    const computedFileName  = document.getElementById('computedFileName');
+    const previewBtn        = document.getElementById('previewBtn');
+    const uploadBtn         = document.getElementById('uploadBtn');
+    const statusBox         = document.getElementById('statusBox');
+    const progressWrap      = document.getElementById('progressWrap');
+    const progressFill      = document.getElementById('progressFill');
+    const progressText      = document.getElementById('progressText');
+    const confirmationNote  = document.getElementById('confirmationNote');
+    const uploadedFileName  = document.getElementById('uploadedFileName');
+
+    // Preview Modal Elements
+    const previewModal      = document.getElementById('previewModal');
+    const previewMediaCont  = document.getElementById('previewMediaContainer');
+    const metaOrigName      = document.getElementById('metaOrigName');
+    const metaTargetName    = document.getElementById('metaTargetName');
+    const metaSize          = document.getElementById('metaSize');
+    const metaType          = document.getElementById('metaType');
+
+    let currentFileObj = null;
+
+    // ─── FILE VALIDATION HELPER ───
+    function getFileExtension(filename) {
+      return filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2).toLowerCase();
+    }
+
+    function formatBytes(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function validateFile(file) {
+      if (!file) return { valid: false, error: 'No file selected.' };
+
+      const ext = getFileExtension(file.name);
+
+      // Check forbidden extensions (html, svg, webp)
+      if (FORBIDDEN_EXTENSIONS.includes(ext)) {
+        return {
+          valid: false,
+          error: `❌ Format .${ext.toUpperCase()} is strictly not permitted! Only PNG, JPEG, JPG, and PDF are allowed.`
+        };
+      }
+
+      // Check allowed list
+      if (!ALLOWED_EXTENSIONS.includes(ext)) {
+        return {
+          valid: false,
+          error: `❌ Unsupported file format (.${ext}). Only PNG, JPEG, JPG, and PDF are accepted.`
+        };
+      }
+
+      // Check 50 MB limit
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        return {
+          valid: false,
+          error: `❌ File size (${formatBytes(file.size)}) exceeds the maximum limit of 50 MB.`
+        };
+      }
+
+      return { valid: true };
+    }
+
+    function updateFileSelection(file) {
+      statusBox.style.display = 'none';
+
+      if (!file) {
+        clearFileOnly();
+        return;
+      }
+
+      const validation = validateFile(file);
+      if (!validation.valid) {
+        clearFileOnly();
+        showStatus('error', validation.error);
+        return;
+      }
+
+      currentFileObj = file;
+      fileInfoChip.style.display = 'inline-flex';
+      fileInfoChip.textContent = `📎 ${file.name} (${formatBytes(file.size)})`;
+      previewBtn.disabled = false;
+
+      updateComputedName();
+    }
+
+    function updateComputedName() {
+      if (!currentFileObj) {
+        fileNamingBadge.style.display = 'none';
+        return;
+      }
+      const code = schoolCodeInput.value.trim() || '[SCHOOL_CODE]';
+      const targetName = `${code}_${currentFileObj.name}`;
+      computedFileName.textContent = targetName;
+      fileNamingBadge.style.display = 'block';
+    }
+
+    // ─── EVENT LISTENERS FOR DRAG & DROP ───
+    schoolCodeInput.addEventListener('input', updateComputedName);
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      if (e.dataTransfer.files.length > 0) {
+        const file = e.dataTransfer.files[0];
+        fileInput.files = e.dataTransfer.files;
+        updateFileSelection(file);
+      }
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length > 0) {
+        updateFileSelection(fileInput.files[0]);
+      } else {
+        clearFileOnly();
+      }
+    });
+
+    // ─── CLEAR FUNCTIONS ───
+    function clearFileOnly() {
+      currentFileObj = null;
+      fileInput.value = '';
+      fileInfoChip.style.display = 'none';
+      fileInfoChip.textContent = '';
+      fileNamingBadge.style.display = 'none';
+      previewBtn.disabled = true;
+    }
+
+    function clearUploadForm() {
+      clearFileOnly();
+      schoolCodeInput.value = '';
+      statusBox.style.display = 'none';
+      confirmationNote.style.display = 'none';
+    }
+
+    // ─── PREVIEW MODAL LOGIC ───
+    function openPreviewModal() {
+      if (!currentFileObj) return;
+
+      const code = schoolCodeInput.value.trim() || '[UNASSIGNED_CODE]';
+      const targetName = `${code}_${currentFileObj.name}`;
+
+      metaOrigName.textContent = currentFileObj.name;
+      metaTargetName.textContent = targetName;
+      metaSize.textContent = formatBytes(currentFileObj.size);
+      metaType.textContent = currentFileObj.type || 'application/octet-stream';
+
+      previewMediaCont.innerHTML = '';
+
+      if (currentFileObj.type.startsWith('image/')) {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(currentFileObj);
+        img.alt = currentFileObj.name;
+        previewMediaCont.appendChild(img);
+      } else if (currentFileObj.type === 'application/pdf' || currentFileObj.name.toLowerCase().endsWith('.pdf')) {
+        previewMediaCont.innerHTML = `
+          <div style="padding:40px; text-align:center; color:var(--gold-light);">
+            <div style="font-size:3.5rem; margin-bottom:10px;">📄</div>
+            <div style="font-size:1.1rem; font-weight:600;">Portable Document Format (PDF)</div>
+            <div style="font-size:0.85rem; color:rgba(255,255,255,0.6); margin-top:6px;">Ready for Google Drive submission.</div>
+          </div>
+        `;
+      } else {
+        previewMediaCont.innerHTML = `
+          <div style="padding:30px; text-align:center; color:rgba(255,255,255,0.7);">
+            <div style="font-size:3rem; margin-bottom:10px;">📦</div>
+            <div>File is ready for upload.</div>
+          </div>
+        `;
+      }
+
+      previewModal.classList.add('open');
+    }
+
+    function closePreviewModal() {
+      previewModal.classList.remove('open');
+    }
+
+    window.addEventListener('click', (e) => {
+      if (e.target === previewModal) closePreviewModal();
+    });
+
+    // ─── UPLOAD HANDLER ───
+    async function handleUpload() {
+      const schoolCode = schoolCodeInput.value.trim();
+      const file = currentFileObj;
+
+      statusBox.style.display = 'none';
+      statusBox.className = 'status-box';
+      confirmationNote.style.display = 'none';
+
+      if (!schoolCode) {
+        showStatus('error', '⚠️ Please enter your assigned School Code before uploading.');
+        schoolCodeInput.focus();
+        return;
+      }
+
+      if (!file) {
+        showStatus('error', '⚠️ Please select a design file to upload.');
+        return;
+      }
+
+      const validation = validateFile(file);
+      if (!validation.valid) {
+        showStatus('error', validation.error);
+        return;
+      }
+
+      const finalName = `${schoolCode}_${file.name}`;
+
+      uploadBtn.disabled = true;
+      progressWrap.style.display = 'block';
+      animateProgress(progressFill, progressText);
+
+      try {
+        const base64Data = await toBase64(file);
+
+        const payload = {
+          fileName : finalName,
+          mimeType : file.type || 'application/octet-stream',
+          data     : base64Data,
+          folderId : DRIVE_FOLDER_ID
+        };
+
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method : 'POST',
+          mode   : 'no-cors',
+          body   : JSON.stringify(payload)
+        });
+
+        progressFill.style.width = '100%';
+        progressText.textContent = 'Upload Completed!';
+
+        showStatus('success', '✅ Design successfully transmitted to the Google Drive depository!');
+        
+        // Exact confirmation line required by prompt:
+        uploadedFileName.textContent = `"${finalName}"`;
+        confirmationNote.style.display = 'block';
+        confirmationNote.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Reset inputs
+        clearFileOnly();
+        schoolCodeInput.value = '';
+
+      } catch (err) {
+        console.error(err);
+        showStatus('error', '❌ Transmission failed. Please verify your internet connection and try again.');
+      } finally {
+        uploadBtn.disabled = false;
+        setTimeout(() => {
+          progressWrap.style.display = 'none';
+          progressFill.style.width = '0%';
+        }, 2500);
+      }
+    }
+
+    function showStatus(type, msg) {
+      statusBox.className = 'status-box ' + type;
+      statusBox.innerHTML = msg;
+      statusBox.style.display = 'block';
+    }
+
+    function toBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function animateProgress(fill, text) {
+      let p = 0;
+      const interval = setInterval(() => {
+        if (p >= 88) {
+          clearInterval(interval);
+          return;
+        }
+        p += Math.random() * 9;
+        fill.style.width = Math.min(p, 88) + '%';
+        text.textContent = `Uploading ${Math.round(Math.min(p, 88))}%…`;
+      }, 250);
+    }
+  </script>
+
+</body>
+</html>
